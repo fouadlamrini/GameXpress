@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\V1\Admin\ProductController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Api\V1\Admin\CategoryController;
 
 
 Route::get('/test', function() {
@@ -19,6 +19,5 @@ Route::post('/logout', [AuthController::class , "logout"])->middleware('auth:san
 
 Route::middleware(['auth:sanctum'])->prefix('v1/admin')->group(function() {
     Route::apiResource('products', ProductController::class);
-    // Route::get('products', [ProductController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
 });
