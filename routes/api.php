@@ -15,5 +15,9 @@ Route::get('/test', function() {
 Route::post('/register', [App\Http\Controllers\API\AuthController::class , "register"]);
 Route::post('/login', [App\Http\Controllers\API\AuthController::class , "login"]);
 Route::post('/logout', [App\Http\Controllers\API\AuthController::class , "logout"])->middleware('auth:sanctum');
-Route::apiResource('products', ProductController::class);
-Route::apiResource('categories', CategoryController::class);
+
+
+Route::middleware(['auth:sanctum'])->prefix('V1/admin')->group(function() {
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('categories', CategoryController::class);
+});
