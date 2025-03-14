@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Auth;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\V1\Admin\ProductController;
 use App\Http\Controllers\CategoryController;
 
 
@@ -12,12 +12,13 @@ Route::get('/test', function() {
 });
 
 
-Route::post('/register', [App\Http\Controllers\API\AuthController::class , "register"]);
-Route::post('/login', [App\Http\Controllers\API\AuthController::class , "login"]);
-Route::post('/logout', [App\Http\Controllers\API\AuthController::class , "logout"])->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class , "register"]);
+Route::post('/login', [AuthController::class , "login"]);
+Route::post('/logout', [AuthController::class , "logout"])->middleware('auth:sanctum');
 
 
-Route::middleware(['auth:sanctum'])->prefix('V1/admin')->group(function() {
+Route::middleware(['auth:sanctum'])->prefix('v1/admin')->group(function() {
     Route::apiResource('products', ProductController::class);
+    // Route::get('products', [ProductController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
 });

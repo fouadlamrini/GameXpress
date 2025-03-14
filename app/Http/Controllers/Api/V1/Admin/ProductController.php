@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Admin;
+
+use App\Http\Controllers\Controller;
 use App\Models\product;
+use App\Models\product_image;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     /**
@@ -12,7 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->json(product::all(), Response::HTTP_OK);
+        $products = product::all();
+        return response()->json(['products' => $products], Response::HTTP_OK);
     }
 
     /**
@@ -35,20 +39,29 @@ class ProductController extends Controller
             'stock' => 'required|numeric',
             'status' => 'required|string',
             'category_id'=>'numeric',
+            'image'=>'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-        // $fields['status'] = "lahcen";
 
         $product = Product::create($fields);
 
-        return response()->json($product, Response::HTTP_CREATED);
+        if($request->hasFile('image')){
+            $imagePath = $request->file('image')->store('Images', 'public');
+            $product_image = new product_image([
+                'product_id'=> $product->id,
+                'image_url' => Storage::url($imagePath),
+                'is_primary' => true,
+            ]);
+            $product_image->save();
+        };
+
+        return response()->json(['product' => $product], Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(product $product)
+
+    public function show($id)
     {
-        return response()->json($product, Response::HTTP_OK);
+        $product = product::find($id);
+        return response()->json(['product' => $product], Response::HTTP_OK);
     }
 
     /**
@@ -71,7 +84,7 @@ class ProductController extends Controller
 
         $product->update($request->all());
 
-        return response()->json($product, Response::HTTP_OK);
+        return response()->json(['product' => $product], Response::HTTP_OK);
     }
 
     /**
