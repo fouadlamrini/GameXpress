@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\belongsTo;
 
 class product_image extends Model
 {
@@ -12,4 +13,7 @@ class product_image extends Model
         'is_primary',
        
     ];
+    public function product():belongsTo{
+     return   $this->belongsTo(product::class);
+    }
 }
